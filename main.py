@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship, Session
 from datetime import datetime
 
-DATABASE_URL = "mysql+pymysql://root:Harris91270@localhost/VieAlternative"
+DATABASE_URL = "mysql+pymysql://bts:Harris91270.@mh285989-001.eu.clouddb.ovh.net:35693/VieAlternative"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
