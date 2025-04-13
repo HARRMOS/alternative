@@ -212,3 +212,27 @@ def complete_mission(user_id: int, mission_id: int, user_photo_url: str = None, 
 def get_user_rewards(user_id: int, db: Session = Depends(get_db)):
     rewards = db.query(UserReward).filter_by(user_id=user_id).all()
     return [{"reward_name": reward.reward_name, "rewarded_at": reward.rewarded_at} for reward in rewards]
+
+
+@app.get("/missions/{user_id}")
+def get_missions_for_user(user_id: int, db: Session = Depends(get_db)):
+    # Récupérer toutes les missions
+    missions = db.query(Mission).all()
+
+    # Récupérer les missions déjà complétées par l'utilisateur
+    completed_missions = db.query(UserProgress).filter_by(user_id=user_id, completed=1).all()
+    completed_mission_ids = [cm.mission_id for cm in completed_missions]
+
+    # Créer une liste de missions avec un attribut 'completed' pour chaque mission
+    missions_with_status = []
+    for mission in missions:
+        is_completed = mission.id in completed_mission_ids
+        missions_with_status.append({
+            "id": mission.id,
+            "title": mission.title,
+            "description": mission.description,
+            "points": mission.points,
+            "completed": is_completed
+        })
+
+    return {"user_id": user_id, "missions": missions_with_status}
